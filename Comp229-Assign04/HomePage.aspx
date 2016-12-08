@@ -16,7 +16,7 @@
             <table>
                 <tr>
                     <td>
-                        <asp:HyperLink runat="server" >
+                        <asp:HyperLink runat="server" navigateUrl='<%#String.Format("~/Character.aspx?name={0}&faction={1}",Eval("name"),Eval("faction")) %>' >
                         <asp:Image ID="factionImg" runat="server" Height="200px" Width="250px" ImageUrl='<%# Eval("imageUrl") %>' />
                         <asp:Label ID="faction" 
                             runat="server" Text='<%# Eval("faction") %>' ForeColor="#000099" />
