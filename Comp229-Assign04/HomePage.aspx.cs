@@ -11,6 +11,17 @@ namespace Comp229_Assign04
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            DataListExample.DataSource = Global.characters;
+            DataListExample.DataBind();
+        }
+
+        protected void DataList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void DataListExample_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
         }
     }
