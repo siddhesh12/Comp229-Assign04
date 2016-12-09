@@ -8,9 +8,6 @@
         <FooterStyle BackColor="#F7DFB5" ForeColor="#8C4510" />
         <HeaderStyle BackColor="#A55129" Font-Bold="True" Font-Size="Large" ForeColor="White"
             HorizontalAlign="Center" VerticalAlign="Middle" />
-        <HeaderTemplate>
-            Student Information
-        </HeaderTemplate>
         <ItemStyle BackColor="White" ForeColor="White" Font-Bold="True" Font-Italic="False" Font-Overline="False" Font-Size="Larger" Font-Strikeout="False" Font-Underline="False" HorizontalAlign="Center" VerticalAlign="Middle" />
         <ItemTemplate>
             <table>

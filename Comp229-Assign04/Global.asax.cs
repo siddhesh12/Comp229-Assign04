@@ -36,5 +36,14 @@ namespace Comp229_Assign04
                 characters = JsonConvert.DeserializeObject<List<CharacterModel>>(jsonString);
             }   
           }
+
+        public void updateNewJson(List<CharacterModel> models)
+        {
+            using (StreamWriter streamWriter
+                = File.CreateText(System.Web.Hosting.HostingEnvironment.MapPath(jsonPath)))
+            {
+                streamWriter.WriteLine(JsonConvert.SerializeObject(models));
+            }
+        }
     }
 }
