@@ -18,19 +18,24 @@ namespace Comp229_Assign04
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var name = Request.QueryString["name"];
-            var faction = Request.QueryString["faction"];
 
-            if(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(faction))
+            if (!IsPostBack)
             {
-                Response.Redirect("~/HomePage.aspx");
-                return;
+                var name = Request.QueryString["name"];
+                var faction = Request.QueryString["faction"];
+
+                if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(faction))
+                {
+                    Response.Redirect("~/HomePage.aspx");
+                    return;
+                }
+
+                charModel = Global.characters.FirstOrDefault(tModel => tModel.name == name && tModel.faction == faction);
+                loadData();
+                updateButton.Visible = true;
+                cancelButton.Visible = false;
             }
 
-            charModel = Global.characters.FirstOrDefault(tModel => tModel.name == name && tModel.faction == faction);
-            loadData();
-            updateButton.Visible = true;
-            cancelButton.Visible = false; 
         }
 
 
@@ -120,9 +125,31 @@ namespace Comp229_Assign04
                 loadData();
 
                 email.Visible = true;
-                cancelEmail.Visible = true;
+                //cancelEmail.Visible = true;
                 emailTextBox.Visible = true;
             }
+        }
+
+        protected void emailButtonClicked(object sender, EventArgs e)
+        {
+            if (IsValidEmail(emailTextBox.Text))
+            {
+                sendEmail(emailTextBox.Text);
+                email.Visible = false;
+                emailTextBox.Visible = false;
+                //cancelEmail.Visible = false;
+            }
+            else
+            {
+                emailTextBox.Visible = true;
+                //cancelEmail.Visible = true;
+            }
+
+        }
+        protected void cancelEmailButton(object sender, EventArgs e)
+        {
+            //cancelEmail.Visible = false;
+
         }
 
 
@@ -136,26 +163,39 @@ namespace Comp229_Assign04
         }
         private void updateModel()
         {
-            if(nameTextField.Text != null)
-            charModel.name = nameTextField.Text;
 
-            if (factionTextBox.Text != null)
-                charModel.faction = factionTextBox.Text;
+            var name = Request.QueryString["name"];
+            var faction = Request.QueryString["faction"];
 
-            if (rankTextBox.Text != null)
-                charModel.rank = int.Parse(rankTextBox.Text);
+            charModel = Global.characters.FirstOrDefault(tModel => tModel.name == name && tModel.faction == faction);
+            if (charModel != null)
+            {
+                if (nameTextField.Text.Length != 0)
+                    charModel.name = nameTextField.Text;
 
-            if (baseTextBox.Text != null)
-                charModel._base = int.Parse(baseTextBox.Text);
+                if (factionTextBox.Text.Length != 0)
+                    charModel.faction = factionTextBox.Text;
 
-            if (sizeTextBox.Text != null)
-                charModel.size = int.Parse(sizeTextBox.Text);
+                if (rankTextBox.Text.Length != 0)
+                    charModel.rank = int.Parse(rankTextBox.Text);
 
-            if (resilianceTextBox.Text != null)
-                charModel.resiliance = int.Parse(resilianceTextBox.Text);
+                if (baseTextBox.Text.Length != 0)
+                    charModel._base = int.Parse(baseTextBox.Text);
 
-            if (woundsTextBox.Text != null)
-                charModel.wounds = int.Parse(woundsTextBox.Text);
+                if (sizeTextBox.Text.Length != 0)
+                    charModel.size = int.Parse(sizeTextBox.Text);
+
+                if (resilianceTextBox.Text.Length != 0)
+                    charModel.resiliance = int.Parse(resilianceTextBox.Text);
+
+                if (woundsTextBox.Text.Length != 0)
+                    charModel.wounds = int.Parse(woundsTextBox.Text);
+            }
+            else
+            {
+
+            }
+          
         }
         private void hideLabels()
         {
@@ -196,27 +236,7 @@ namespace Comp229_Assign04
             woundsTextBox.Text = wounds.Text;
 
         }
-        private void hideTextFileds()
-        {
 
-        }
-
-        private void emailButtonClicked()
-        {
-                if (IsValidEmail(emailTextBox.Text))
-                {
-                    sendEmail(emailTextBox.Text);
-                    email.Visible = false;
-                    emailTextBox.Visible = false;
-                    cancelEmail.Visible = false;
-                }
-                else
-                {
-                    emailTextBox.Visible = true;
-                    cancelEmail.Visible = true;
-                }
-         
-        }
 
         private void sendEmail(string email)
         {
@@ -248,7 +268,7 @@ namespace Comp229_Assign04
                 System.Net.Mime.ContentType contentType = new System.Net.Mime.ContentType();
                 contentType.MediaType = System.Net.Mime.MediaTypeNames.Application.Octet;
                 contentType.Name = Global.jsonFileName;
-                message.Attachments.Add(new Attachment(System.Web.Hosting.HostingEnvironment.MapPath(attachmentFileName), contentType));
+                message.Attachments.Add(new Attachment(System.Web.Hosting.HostingEnvironment.MapPath(Global.jsonPathNew), contentType));
 
                 smtpClient.Send(message);
                 //statusLabel.Text = "Email sent.";
@@ -271,10 +291,7 @@ namespace Comp229_Assign04
                 return false;
             }
         }
-        private void cancelEmailButton()
-        {
-            cancelEmail.Visible = false;
-        }
+       
 
     }
 }
