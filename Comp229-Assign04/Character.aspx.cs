@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -47,7 +50,7 @@ namespace Comp229_Assign04
             rank.Visible = true;
             rankTextBox.Visible = false;
 
-            baseLabel.Text = charModel._base + "mm";
+            baseLabel.Text = charModel._base.ToString();
             baseLabel.Visible = true;
             baseTextBox.Visible = false;
 
@@ -96,27 +99,41 @@ namespace Comp229_Assign04
 
         protected void cancelButtonClicked(object sender, EventArgs e)
         {
-
+            loadData();
+            updateButton.Text = "Update";
+            cancelButton.Visible = false;
         }
         protected void updateButtonClicked(object sender, EventArgs e)
         {
-            if(updateButton.Text == "update")
+            if(updateButton.Text == "Update")
             {
                 hideLabels();
-                updateButton.Text = "done";
+                updateButton.Text = "Done";
                 cancelButton.Visible = true;
             }
             else
             {
                 updateModel();
-                updateButton.Text = "update";
+                updateButton.Text = "Update";
                 cancelButton.Visible = false;
+                updateJson();
                 loadData();
 
-
+                email.Visible = true;
+                cancelEmail.Visible = true;
+                emailTextBox.Visible = true;
             }
         }
 
+
+        private void updateJson()
+        {
+            using (StreamWriter streamWriter
+                     = File.CreateText(System.Web.Hosting.HostingEnvironment.MapPath(Global.jsonPathNew)))
+            {
+                streamWriter.WriteLine(JsonConvert.SerializeObject(Global.characters));
+            }
+        }
         private void updateModel()
         {
             if(nameTextField.Text != null)
@@ -139,10 +156,6 @@ namespace Comp229_Assign04
 
             if (woundsTextBox.Text != null)
                 charModel.wounds = int.Parse(woundsTextBox.Text);
-
-
-
-
         }
         private void hideLabels()
         {
@@ -187,5 +200,81 @@ namespace Comp229_Assign04
         {
 
         }
+
+        private void emailButtonClicked()
+        {
+                if (IsValidEmail(emailTextBox.Text))
+                {
+                    sendEmail(emailTextBox.Text);
+                    email.Visible = false;
+                    emailTextBox.Visible = false;
+                    cancelEmail.Visible = false;
+                }
+                else
+                {
+                    emailTextBox.Visible = true;
+                    cancelEmail.Visible = true;
+                }
+         
+        }
+
+        private void sendEmail(string email)
+        {
+            EmailJsonFile(email, "siddhesh" );
+        }
+
+        public static void EmailJsonFile(string clientEmailAddress, string clientName)
+        {
+            SmtpClient smtpClient = new SmtpClient("smtp-mail.outlook.com", 587);
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+            MailMessage message = new MailMessage();
+            try
+            {
+                MailAddress fromAddress = new MailAddress("cc-comp229f2016@outlook.com", "Comp229-Assign04");
+                MailAddress toAddress = new MailAddress(clientEmailAddress, clientName);
+                message.From = fromAddress;
+                message.To.Add(toAddress);
+                message.Subject = "Comp229-Assign04 email";
+                message.Body = "Please find attached json file";
+
+                smtpClient.Host = "smtp-mail.outlook.com";
+                smtpClient.EnableSsl = true;
+
+                // SET UseDefaultCredentials to false BEFORE setting Credentials - we all have 'ugh' moments
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.Credentials = new System.Net.NetworkCredential(Global.emailID, Global.emailPassword);
+
+                System.Net.Mime.ContentType contentType = new System.Net.Mime.ContentType();
+                contentType.MediaType = System.Net.Mime.MediaTypeNames.Application.Octet;
+                contentType.Name = Global.jsonFileName;
+                message.Attachments.Add(new Attachment(System.Web.Hosting.HostingEnvironment.MapPath(attachmentFileName), contentType));
+
+                smtpClient.Send(message);
+                //statusLabel.Text = "Email sent.";
+            }
+            catch (Exception ex)
+            {
+                //statusLabel.Text = "Coudn't send the message!";
+            }
+        }
+
+        private  bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        private void cancelEmailButton()
+        {
+            cancelEmail.Visible = false;
+        }
+
     }
 }

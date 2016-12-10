@@ -4,6 +4,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <asp:Button  type="button" class="btn btn-primary btn-md" ID="updateButton" runat="server" Text="Update" onclick="updateButtonClicked" />
     <asp:Button type="button" class="btn btn-primary btn-md" runat="server" ID="cancelButton" onclick="cancelButtonClicked" Text="Cancel" />
+    <asp:Button type="button" class="btn btn-primary btn-md" runat="server" ID="email" onclick="emailButtonClicked" Text="Email"  Visible="false"/>
+     <asp:Button type="button" class="btn btn-primary btn-md" runat="server" ID="cancelEmail" onclick="cancelEmailButton" Text="Cancel Email" />
+
+    <asp:TextBox ID="emailTextBox" runat="server" Visible="false" />
+
         <div class="row" role="main">
         <div class="col-xs-12 col-md-4">
             <asp:Image ID="factionImg" runat="server" Width="250px" class="img-rounded" alt="Cinque Terre" />

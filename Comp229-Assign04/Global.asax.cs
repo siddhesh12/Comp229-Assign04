@@ -18,6 +18,10 @@ namespace Comp229_Assign04
         public static string emailID = "cc-comp229f2016@outlook.com";
         public static string emailPassword = "comp229pwd";
         public static string jsonPath = "~/Assign04.json";
+        public static string jsonPathNew = "~/Assign04New.json";
+        public static string jsonFileName = "Assign04New.json";
+
+
         public static List<CharacterModel> characters;
 
         void Application_Start(object sender, EventArgs e)
